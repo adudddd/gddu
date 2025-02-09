@@ -63,7 +63,7 @@
       -webkit-text-fill-color: transparent;
       text-align: center;
     }
-    /* Side text now displayed below the main text in a small, readable font */
+    /* Side text displayed below the main text in a small, readable font */
     #wrapper-side-text {
       margin-top: 5px;
       font-size: 12px;
@@ -109,7 +109,7 @@
       opacity: 0;
       z-index: 5;
     }
-    /* Container for falling chocolates (not used in final celebration) */
+    /* Container for falling chocolates (unused in final celebration) */
     #falling-chocolates {
       position: absolute;
       top: 0;
@@ -265,8 +265,8 @@
      *****************************/
     function showMessage(text) {
       messageEl.textContent = text;
+      gsap.killTweensOf(messageEl);
       gsap.fromTo(messageEl, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
-      // Do not auto-fade; final message will fade out after 10 seconds in finalCelebration.
     }
     
     /*************************************
@@ -331,7 +331,7 @@
       // Emit chocolate crumb particles
       createCrumbParticles(piece);
       
-      // Fade out the original piece (keeping its space) and mark it as bitten
+      // Fade out the original piece (keeping its grid space) and mark it as bitten
       gsap.to(piece, { duration: 0.5, opacity: 0, delay: 1, onComplete: () => { 
           piece.style.pointerEvents = 'none';
           piece.dataset.bit = "true";
@@ -365,10 +365,15 @@
       }
     }
     
-    // Final celebration: display the final message for 10 seconds then fade out
+    // Final celebration: replace any lingering message with the final message, display it for 10 seconds, then fade it out
     function finalCelebration() {
-      showMessage("Thank you for being with me till this time ❤️");
-      gsap.to(messageEl, { duration: 1, opacity: 0, delay: 10 });
+      gsap.killTweensOf(messageEl);
+      gsap.to(messageEl, { duration: 0.5, opacity: 0, onComplete: () => {
+          messageEl.textContent = "Thank you for being with me till this time ❤️";
+          gsap.fromTo(messageEl, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", onComplete: () => {
+              gsap.to(messageEl, { duration: 1, opacity: 0, delay: 10 });
+          }});
+      }});
     }
   </script>
 </body>
