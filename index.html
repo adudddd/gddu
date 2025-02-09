@@ -2,439 +2,352 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Chocolate Animation</title>
-  <!-- GSAP & Three.js libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <title>Happy Chocolate Day!</title>
   <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap" rel="stylesheet">
+  <!-- GSAP for smooth, high-performance animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
+    /* Reset & body styling */
     body {
       margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #fff1e6, #ffe4d1);
+      font-family: sans-serif;
       overflow: hidden;
-      background: #1a1a1a;
     }
-    #canvas-container {
-      position: fixed;
+    /* Container for the entire animation */
+    #animation-container {
+      position: relative;
       width: 100vw;
       height: 100vh;
-      top: 0;
-      left: 0;
     }
-    /* Message area below the chocolate bar */
-    .message {
+    /* Gold foil wrapper styling */
+    #wrapper {
       position: absolute;
-      bottom: 50px;
+      width: 450px;
+      height: 250px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #FFD700, #FFC107);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 3;
+    }
+    /* Chocolate bar container: hidden initially behind the wrapper */
+    #chocolate-bar {
+      position: absolute;
+      width: 450px;
+      height: 250px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 10px;
+      z-index: 2;
+      opacity: 0;
+    }
+    /* Each chocolate piece */
+    .chocolate-piece {
+      background: linear-gradient(145deg, #3D1C02, #5a2e0f);
+      border-radius: 4px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Message display styling */
+    #message {
+      position: absolute;
+      bottom: 30px;
       width: 100%;
       text-align: center;
       font-family: 'Tangerine', cursive;
-      font-size: 2rem;
+      font-size: 3rem;
       color: #9A031E;
       opacity: 0;
-      pointer-events: none;
+      z-index: 5;
     }
-    .particle,
-    .wrapper-particle {
+    /* Falling chocolates container */
+    #falling-chocolates {
       position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-      border-radius: 50%;
+      z-index: 4;
     }
+    /* Style for each falling chocolate */
+    .falling-chocolate {
+      position: absolute;
+      width: 30px;
+      height: 20px;
+      background: linear-gradient(145deg, #3D1C02, #5a2e0f);
+      border-radius: 4px;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    /* Particle styling (chocolate crumbs) */
     .particle {
-      width: 8px;
-      height: 8px;
-      background: radial-gradient(circle, #3D1C02 0%, transparent 70%);
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #3D1C02;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
     }
-    .wrapper-particle {
-      width: 12px;
-      height: 12px;
-      background: radial-gradient(circle, #FFD700 0%, transparent 70%);
+    /* Floating heart container */
+    #heart-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 6;
     }
+    /* Floating heart shape */
     .heart {
       position: absolute;
       width: 30px;
       height: 30px;
-      /* Create a red-to-pink gradient heart with a soft glow */
       background: radial-gradient(circle, rgba(154,3,30,1) 0%, rgba(255,111,97,1) 100%);
       clip-path: polygon(50% 0%, 61% 10%, 75% 15%, 85% 30%, 90% 45%, 85% 60%, 75% 75%, 50% 100%, 25% 75%, 15% 60%, 10% 45%, 15% 30%, 25% 15%, 39% 10%);
       filter: drop-shadow(0 0 8px rgba(255,111,97,1));
-      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div id="canvas-container"></div>
-  <div class="message"></div>
+  <div id="animation-container">
+    <!-- Gold foil wrapper (click to peel) -->
+    <div id="wrapper"></div>
+    <!-- Chocolate bar divided into 6 pieces (2 rows x 3 columns) -->
+    <div id="chocolate-bar">
+      <div class="chocolate-piece" data-message="You're sweeter than chocolate!"></div>
+      <div class="chocolate-piece" data-message="Every moment with you melts my heart."></div>
+      <div class="chocolate-piece" data-message="Your love is as rich as the finest cocoa."></div>
+      <div class="chocolate-piece" data-message="Life is sweeter with you by my side."></div>
+      <div class="chocolate-piece" data-message="A bite of love, a taste of joy."></div>
+      <div class="chocolate-piece" data-message="You make my world a delicious place."></div>
+    </div>
+    <!-- Message container -->
+    <div id="message"></div>
+    <!-- Container for falling chocolates at the end -->
+    <div id="falling-chocolates"></div>
+    <!-- Container for floating hearts -->
+    <div id="heart-container"></div>
+  </div>
+  
   <script>
     /*****************************
-     * Global Variables & Setup *
+     * Global Variables & Setup  *
      *****************************/
-    let isWrapperOpened = false;
-    let currentBiteGroup = null;  // Tracks the currently bitten piece (if any)
+    let activeBite = null;
     let biteTimeout = null;
-
-    // THREE.JS SETUP
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-    // Lighting for realistic shadows and reflections
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
-    camera.position.z = 7;
-
-    /************************************
-     * Materials & Textures (WebGL)     *
-     ************************************/
-    // Chocolate Material: Rich dark brown (#3D1C02) with subtle highlights.
-    const chocolateColor = new THREE.Color("#3D1C02");
-    const chocolateTexture = new THREE.DataTexture(new Uint8Array([
-      Math.floor(chocolateColor.r * 255),
-      Math.floor(chocolateColor.g * 255),
-      Math.floor(chocolateColor.b * 255),
-      255
-    ]), 1, 1, THREE.RGBAFormat);
-    chocolateTexture.needsUpdate = true;
-    const chocolateMaterial = new THREE.MeshPhysicalMaterial({
-      map: chocolateTexture,
-      roughness: 0.7,
-      metalness: 0,
-      clearcoat: 0.3,
-      clearcoatRoughness: 0.25
-    });
-
-    // Wrapper Material: Gold foil (#FFD700) with metallic reflections.
-    const wrapperColor = new THREE.Color("#FFD700");
-    const wrapperTexture = new THREE.DataTexture(new Uint8Array([
-      Math.floor(wrapperColor.r * 255),
-      Math.floor(wrapperColor.g * 255),
-      Math.floor(wrapperColor.b * 255),
-      255
-    ]), 1, 1, THREE.RGBAFormat);
-    wrapperTexture.needsUpdate = true;
-    const wrapperMaterial = new THREE.MeshPhysicalMaterial({
-      map: wrapperTexture,
-      roughness: 0.2,
-      metalness: 0.8,
-      side: THREE.DoubleSide
-    });
-
-    /**********************************
-     * Chocolate Bar & Segments Group *
-     **********************************/
-    const chocolateBar = new THREE.Group();
-    scene.add(chocolateBar);
-
-    // Create 6 chocolate segments arranged in 2 rows x 3 columns.
-    const segments = [];
-    const segmentRows = 2, segmentCols = 3;
-    const segmentWidth = 1.2, segmentHeight = 0.9, segmentDepth = 0.4;
-    const spacingX = 0.1, spacingY = 0.1;
-    for (let row = 0; row < segmentRows; row++){
-      for (let col = 0; col < segmentCols; col++){
-        const segGeom = new THREE.BoxGeometry(segmentWidth, segmentHeight, segmentDepth);
-        const segMesh = new THREE.Mesh(segGeom, chocolateMaterial.clone());
-        // Center the grid on the scene.
-        segMesh.position.x = (col - (segmentCols - 1) / 2) * (segmentWidth + spacingX);
-        segMesh.position.y = ((row - (segmentRows - 1) / 2) * (segmentHeight + spacingY));
-        // Attach a unique romantic message to each segment.
-        segMesh.userData.message = getRomanticMessage(row * segmentCols + col);
-        chocolateBar.add(segMesh);
-        segments.push(segMesh);
-      }
-    }
-
-    /**********************************
-     * Chocolate Wrapper (Mesh)       *
-     **********************************/
-    // The wrapper covers the entire chocolate bar.
-    const wrapperWidth = 4.2, wrapperHeight = 2.2;
-    const wrapperGeom = new THREE.PlaneGeometry(wrapperWidth, wrapperHeight);
-    const wrapperMesh = new THREE.Mesh(wrapperGeom, wrapperMaterial);
-    // Position the wrapper just above the chocolate bar.
-    wrapperMesh.position.z = segmentDepth / 2 + 0.02;
-    scene.add(wrapperMesh);
-
-    /**********************************
-     * Utility: Get Romantic Message   *
-     **********************************/
-    function getRomanticMessage(index) {
-      const messages = [
-        "You're sweeter than chocolate!",
-        "Every moment with you melts my heart.",
-        "Your love is as rich as the finest cocoa.",
-        "Life is sweeter with you by my side.",
-        "A bite of love, a taste of joy.",
-        "You make my world a delicious place."
-      ];
-      return messages[index % messages.length];
-    }
-
-    /**********************************
-     * GSAP: Wrapper Peel Animation   *
-     **********************************/
-    function openWrapper() {
-      if (isWrapperOpened) return;
-      isWrapperOpened = true;
-      // Animate the wrapper to rotate and slide to the right,
-      // simulating a realistic peel from left to right.
-      gsap.to(wrapperMesh.rotation, {
-        y: -Math.PI / 2,
-        duration: 1.5,
-        ease: "power2.inOut"
-      });
-      gsap.to(wrapperMesh.position, {
-        x: 3,
-        duration: 1.5,
-        ease: "power2.inOut",
-        onComplete: createWrapperParticles
-      });
-    }
-
-    // Create foil particles to simulate crumpling during the peel.
-    function createWrapperParticles() {
-      for (let i = 0; i < 20; i++) {
-        const particle = document.createElement("div");
-        particle.className = "wrapper-particle";
-        document.body.appendChild(particle);
-        gsap.fromTo(particle, {
-          x: window.innerWidth / 2,
-          y: window.innerHeight / 2,
-          scale: 1,
-          opacity: 1
-        }, {
-          duration: 1.5,
-          x: window.innerWidth / 2 + (Math.random() - 0.5) * 300,
-          y: window.innerHeight / 2 + (Math.random() - 0.5) * 300,
-          scale: 0,
-          opacity: 0,
-          ease: "power2.out",
-          onComplete: () => particle.remove()
-        });
-      }
-    }
-
-    /******************************************
-     * Particle Effects: Chocolate Crumbs     *
-     ******************************************/
-    function createCrumbParticles(worldPos) {
-      // Convert 3D position to 2D screen coordinates.
-      const vector = worldPos.clone().project(camera);
-      const x = (vector.x + 1) / 2 * window.innerWidth;
-      const y = (-vector.y + 1) / 2 * window.innerHeight;
-      for (let i = 0; i < 15; i++) {
-        const particle = document.createElement("div");
-        particle.className = "particle";
-        document.body.appendChild(particle);
-        gsap.fromTo(particle, {
-          x: x,
-          y: y,
-          scale: 1,
-          opacity: 1
-        }, {
-          duration: 1.5,
-          x: x + (Math.random() - 0.5) * 200,
-          y: y + (Math.random() - 0.5) * 200,
-          scale: 0,
-          opacity: 0,
-          ease: "power2.out",
-          onComplete: () => particle.remove()
-        });
-      }
-    }
-
-    /******************************************
-     * Display Romantic Message               *
-     ******************************************/
-    function showMessage(text) {
-      const msgEl = document.querySelector(".message");
-      msgEl.textContent = text;
-      gsap.fromTo(msgEl, {
-        opacity: 0,
-        y: 20
-      }, {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        onComplete: () => {
-          gsap.to(msgEl, {
-            opacity: 0,
-            delay: 3,
-            duration: 0.5
-          });
-        }
-      });
-    }
-
-    /******************************************
-     * Bite Animation: Split & Remove Segment *
-     ******************************************/
-    function biteChocolate(piece) {
-      // If another piece has already been bitten, remove it immediately.
-      if (currentBiteGroup && currentBiteGroup !== piece) {
-        chocolateBar.remove(currentBiteGroup);
-        currentBiteGroup = null;
-        if (biteTimeout) { clearTimeout(biteTimeout); biteTimeout = null; }
-      }
-      // Get the world position for the crumb effect.
-      const worldPos = new THREE.Vector3();
-      piece.getWorldPosition(worldPos);
-      
-      // Remove the original piece from the chocolate bar.
-      chocolateBar.remove(piece);
-      
-      // Create two halves representing the bitten piece.
-      const bbox = new THREE.Box3().setFromObject(piece);
-      const size = new THREE.Vector3();
-      bbox.getSize(size);
-      const halfWidth = size.x / 2;
-      const geometryLeft = new THREE.BoxGeometry(halfWidth, size.y, size.z);
-      const geometryRight = new THREE.BoxGeometry(halfWidth, size.y, size.z);
-      
-      const leftHalf = new THREE.Mesh(geometryLeft, piece.material);
-      const rightHalf = new THREE.Mesh(geometryRight, piece.material);
-      // Position halves relative to the original piece.
-      leftHalf.position.x = piece.position.x - halfWidth / 2;
-      rightHalf.position.x = piece.position.x + halfWidth / 2;
-      leftHalf.position.y = piece.position.y;
-      rightHalf.position.y = piece.position.y;
-      leftHalf.position.z = piece.position.z;
-      rightHalf.position.z = piece.position.z;
-      
-      // Group the halves together.
-      const biteGroup = new THREE.Group();
-      biteGroup.add(leftHalf);
-      biteGroup.add(rightHalf);
-      chocolateBar.add(biteGroup);
-      currentBiteGroup = biteGroup;
-      
-      // Animate the halves moving apart and then scaling down (bite effect).
-      gsap.to(leftHalf.position, {
-        x: leftHalf.position.x - 0.5,
-        duration: 1,
-        ease: "power2.out"
-      });
-      gsap.to(rightHalf.position, {
-        x: rightHalf.position.x + 0.5,
-        duration: 1,
-        ease: "power2.out"
-      });
-      gsap.to(biteGroup.scale, {
-        x: 0,
-        y: 0,
-        duration: 1,
-        delay: 1,
-        ease: "power2.in",
-        onComplete: () => {
-          chocolateBar.remove(biteGroup);
-        }
-      });
-      
-      // Emit chocolate crumb particles.
-      createCrumbParticles(worldPos);
-      
-      // Display the romantic message attached to the piece.
-      showMessage(piece.userData.message);
-      
-      // Remove this bitten piece after 10 seconds if not already removed.
-      if (biteTimeout) clearTimeout(biteTimeout);
-      biteTimeout = setTimeout(() => {
-        if (currentBiteGroup) {
-          chocolateBar.remove(currentBiteGroup);
-          currentBiteGroup = null;
-        }
-      }, 10000);
-    }
-
-    /******************************************
-     * Floating Heart Animation               *
-     ******************************************/
+    
+    const wrapper = document.getElementById('wrapper');
+    const chocolateBar = document.getElementById('chocolate-bar');
+    const messageEl = document.getElementById('message');
+    const fallingContainer = document.getElementById('falling-chocolates');
+    
+    /*****************************
+     * Floating Heart Animation  *
+     *****************************/
     function createFloatingHeart() {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.style.left = (window.innerWidth / 2 - 15) + "px";
-      heart.style.top = (window.innerHeight / 2 - 15) + "px";
-      document.body.appendChild(heart);
-      // Heart gently pulsates and moves upward repeatedly.
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      // Start at a random horizontal position along the bottom
+      heart.style.left = Math.random() * 80 + 10 + '%';
+      heart.style.top = '100%';
+      document.getElementById('heart-container').appendChild(heart);
+      // Animate upward then reset continuously
       gsap.to(heart, {
-        y: -150,
-        scale: 1.2,
-        duration: 3,
+        y: -window.innerHeight - 50,
+        duration: 5 + Math.random() * 3,
         ease: "power1.inOut",
         repeat: -1,
-        yoyo: true
+        delay: Math.random() * 2,
+        onRepeat: () => {
+          heart.style.left = Math.random() * 80 + 10 + '%';
+        }
       });
-      // Create a particle trail for the heart.
-      function heartTrail() {
-        const particle = document.createElement("div");
-        particle.className = "particle";
+      // Pulsate the heart gently
+      gsap.to(heart, {
+        scale: 1.2,
+        duration: 0.8,
+        yoyo: true,
+        repeat: -1,
+        ease: "power1.inOut"
+      });
+    }
+    
+    // Create a few floating hearts for extra charm
+    for (let i = 0; i < 5; i++) {
+      createFloatingHeart();
+    }
+    
+    /*****************************
+     * Wrapper Peel Animation    *
+     *****************************/
+    wrapper.addEventListener('click', () => {
+      // Animate the wrapper "peeling" away: rotate and slide right
+      gsap.to(wrapper, {
+        duration: 1.5,
+        rotationY: 90,
+        x: 300,
+        ease: "power2.inOut",
+        onComplete: () => {
+          wrapper.style.display = 'none';
+          // Reveal the chocolate bar by fading it in
+          gsap.to(chocolateBar, {duration: 1, opacity: 1});
+        }
+      });
+      // Create a fun particle effect as the wrapper peels off
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = (window.innerWidth/2) + 'px';
+        particle.style.top = (window.innerHeight/2) + 'px';
         document.body.appendChild(particle);
-        gsap.fromTo(particle, {
-          x: parseFloat(heart.style.left),
-          y: parseFloat(heart.style.top),
-          opacity: 1,
-          scale: 1
-        }, {
+        gsap.to(particle, {
           duration: 1.5,
-          x: parseFloat(heart.style.left) + (Math.random() - 0.5) * 100,
-          y: parseFloat(heart.style.top) + (Math.random() - 0.5) * 100,
+          x: (Math.random()-0.5)*200,
+          y: (Math.random()-0.5)*200,
           opacity: 0,
           scale: 0,
           ease: "power2.out",
-          onComplete: () => particle.remove()
+          onComplete: () => { particle.remove(); }
         });
       }
-      setInterval(heartTrail, 500);
+    });
+    
+    /*****************************
+     * Display Romantic Message  *
+     *****************************/
+    function showMessage(text) {
+      messageEl.textContent = text;
+      gsap.fromTo(messageEl, {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: 0.5, ease: "power2.out"});
+      gsap.to(messageEl, {opacity: 0, delay: 3, duration: 0.5});
     }
-    // Create the floating heart as soon as the page loads.
-    createFloatingHeart();
-
-    /******************************************
-     * Interaction: Raycaster & Mouse Click     *
-     ******************************************/
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    function onClick(event) {
-      // Convert the mouse coordinates to normalized device coordinates.
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-
-      if (!isWrapperOpened) {
-        // If the wrapper is still intact, check for a click on it.
-        const intersects = raycaster.intersectObject(wrapperMesh);
-        if (intersects.length > 0) {
-          openWrapper();
-        }
-      } else {
-        // Once unwrapped, check for clicks on any chocolate segment.
-        const intersects = raycaster.intersectObjects(segments, true);
-        if (intersects.length > 0) {
-          const clickedPiece = intersects[0].object;
-          biteChocolate(clickedPiece);
-        }
+    
+    /*************************************
+     * Chocolate Crumb Particle Effect   *
+     *************************************/
+    function createCrumbParticles(piece) {
+      const rect = piece.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height/2;
+      for (let i = 0; i < 10; i++) {
+        const crumb = document.createElement('div');
+        crumb.classList.add('particle');
+        crumb.style.left = cx + 'px';
+        crumb.style.top = cy + 'px';
+        document.body.appendChild(crumb);
+        gsap.to(crumb, {
+          duration: 1,
+          x: (Math.random()-0.5)*100,
+          y: (Math.random()-0.5)*100,
+          opacity: 0,
+          scale: 0,
+          ease: "power2.out",
+          onComplete: () => { crumb.remove(); }
+        });
       }
     }
-    window.addEventListener("click", onClick);
-
-    /******************************************
-     * Render Loop & Resize Handling          *
-     ******************************************/
-    function animate() {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
+    
+    /*************************************
+     * Bite Animation for a Chocolate    *
+     *************************************/
+    function bitePiece(piece) {
+      // If another piece is active, remove it immediately
+      if (activeBite && activeBite !== piece) {
+        activeBite.remove();
+        activeBite = null;
+        if (biteTimeout) clearTimeout(biteTimeout);
+      }
+      activeBite = piece;
+      // Retrieve the romantic message from the piece's data attribute
+      const msg = piece.getAttribute('data-message');
+      showMessage(msg);
+      
+      // Clone the piece to create two halves
+      const rect = piece.getBoundingClientRect();
+      const pieceClone = piece.cloneNode(true);
+      pieceClone.style.position = 'absolute';
+      pieceClone.style.left = rect.left + 'px';
+      pieceClone.style.top = rect.top + 'px';
+      pieceClone.style.margin = 0;
+      pieceClone.style.transformOrigin = "center center";
+      document.body.appendChild(pieceClone);
+      
+      // Create left and right halves using CSS clipping
+      const leftHalf = pieceClone.cloneNode(true);
+      const rightHalf = pieceClone.cloneNode(true);
+      leftHalf.style.clipPath = "inset(0 50% 0 0)";
+      rightHalf.style.clipPath = "inset(0 0 0 50%)";
+      document.body.appendChild(leftHalf);
+      document.body.appendChild(rightHalf);
+      piece.style.visibility = "hidden";
+      
+      // Animate the halves moving apart and fading away
+      gsap.to(leftHalf, {duration: 1, x: -50, opacity: 0, ease: "power2.out", onComplete: () => { leftHalf.remove(); }});
+      gsap.to(rightHalf, {duration: 1, x: 50, opacity: 0, ease: "power2.out", onComplete: () => { rightHalf.remove(); }});
+      
+      // Emit chocolate crumb particles from the bitten piece
+      createCrumbParticles(piece);
+      
+      // Fade out and remove the original piece after the bite animation
+      gsap.to(piece, {duration: 0.5, opacity: 0, delay: 1, onComplete: () => { 
+        piece.remove(); 
+        checkFinalCelebration(); 
+      }});
+      
+      // Clear the active bite after 10 seconds if no new piece is clicked
+      if (biteTimeout) clearTimeout(biteTimeout);
+      biteTimeout = setTimeout(() => {
+        activeBite = null;
+      }, 10000);
     }
-    animate();
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    // Add click event listeners to each chocolate piece
+    const pieces = document.querySelectorAll('.chocolate-piece');
+    pieces.forEach(piece => {
+      piece.addEventListener('click', (e) => {
+        e.stopPropagation();
+        bitePiece(piece);
+      });
     });
+    
+    /*************************************
+     * Trigger Final Celebration         *
+     *************************************/
+    function checkFinalCelebration() {
+      const remaining = document.querySelectorAll('.chocolate-piece');
+      if (remaining.length === 0) {
+        setTimeout(finalCelebration, 1000);
+      }
+    }
+    
+    // Final celebration: "Happy chocolate day!" and shower of falling chocolates
+    function finalCelebration() {
+      showMessage("Happy chocolate day!");
+      // Create falling chocolate pieces from above
+      for (let i = 0; i < 30; i++) {
+        const fallChoc = document.createElement('div');
+        fallChoc.classList.add('falling-chocolate');
+        fallChoc.style.left = Math.random() * window.innerWidth + "px";
+        fallChoc.style.top = -50 + "px";
+        fallingContainer.appendChild(fallChoc);
+        gsap.to(fallChoc, {
+          duration: 3 + Math.random() * 2,
+          y: window.innerHeight + 50,
+          ease: "power2.in",
+          onComplete: () => { fallChoc.remove(); }
+        });
+      }
+    }
   </script>
 </body>
 </html>
