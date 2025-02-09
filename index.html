@@ -1,572 +1,363 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Happy Chocolate Day!</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* --- Embedded CSS (No external stylesheet needed) --- */
-       @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
-
-        body {
-            font-family: 'Dancing Script', cursive;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f8e0e6;  /*Soft pink. */
-            background-image: url("https://images.unsplash.com/photo-1517299225289-35e955c4a73b?q=80&w=1970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"); /* Add texture/ Image . URL for image */
-
-              background-size: cover;     /* Set   the Size, it might cover   */
-
-        	 background-repeat: no-repeat;
-            background-blend-mode: soft-light;
-           /*Add blend background modes.*/
-
-             margin: 0;
-
-                overflow: hidden; /* Hide scroll if shows.*/
-
-        }
-
-        /* Centers content*/
-
-            /* Responsive:*/
-         .card {  /*New Element for Cards*/
-
-           border: solid; /*debug
-
-             display: flex; /* Display for responsive and design control  */
-            justify-content: center;
-
-           background-color: rgba(255, 255, 255, 0.85); /* Card Visual, Transparent Background  for see elements
-      margin: auto;  /*For adjusting to container screen size (Responsive).*/
-
-            width: min(100vw, 300px);/* set min(available viewportWidth, max). Prevent get outside*/
-
-     	        height: max-content;/*  Adapt if content more
-                 /*   height: min(90vh,400px); /
-
-                    padding: 10px;  /* Size  for the wrapping elements, it would adapt
-                      max-height: min(700px, 98vh);
-
-                  /*Add Shadow  for improving visuals of main element, creates  container (for*/
-
-           /* Add Box Shadows and other settings */
-
-                  box-shadow: 4px 8px  20px   black;  /* Adds some Box Shadows */
- }
-
-  /* Style and visual heart element. Use  relative (to allow movement and handle other )
-
-      It draws shape visual using CSS. */
-    .heart-container{
-
-           position: relative;   /* required.  it would depend of absolute objects like heart itself.
-           display: inline-block; /*Allow box, block-levels.  */
-        top: -185px; /* Top move it to visible
-
-     z-index:30;  /* Makes sure
-
-  /* border: solid blue;*/ /* */
- }
- /*CSS: Hear drawing
-
- It creates shape heart effect using multiple border, rotating
- positions */
-
- .heart {
-
-           position: absolute;/* Positioning  it on Container, requires top level to
-
-   width: 50px;   /*set dimensions, size and change other settings.*/
-
-           height: 50px;/* height. Both same for the visual  heart element, required to draw the other */
-   background-color:  #ff69b4;    /* background of the visual
-     box-shadow:  5px  5px 3px 0.3em rgba(0, 0, 0, 0.4) /* Add Glow  improve
-
-     transition:transform 0.8s; /* sets animations */
-       transform: rotate(-45deg) scale(1);     /* visual and rotate*/
-   }
-
-/*     Styles both  for border positioning*/
-
-     /* Before  of Heart */
-        .heart::before,   /* Draws using*/
-
-  /* Add pseudo after, same behavior of heart class*/
-
-     .heart::after {  /* uses ::after pseudoElements to simulate extra element, then drawing  heart */
-
-          /* Uses Defaults attributes of  and */
-        content: '';     /*Default, Required by
-
-        /* It position at center*/
-          position: absolute;     /* */
-
-           width: inherit;/* uses Parent (heart's */
-       height: inherit;/* Height value (uses Parent). It inherit's, size, background   box-shadow  ,  .
-
- background-color: inherit;      /*Background
-
-             /* Draw/Shape border: required, rounded: */
-    border-radius: 50%;
-
-          box-shadow: inherit;/*  copy same */
-     }
-
-
-/*  , to work properly
-
-          on each size*/
- .heart::before {      /*left Shape heart with positioning.*/
-
-  left: -25px; /* uses 50 percent, based on half/width   */
-     top: 0px;/*Top and bottom
-
- }
- .heart::after {     /*Right Shape*/
-
-      left: 0;    /* Uses Half  and positioning , draws other half   heart
-
-	 top: -25px;   /*moves half on height
-  }
-
-/*  animation*/
-
-     #unwrap:checked  ~ .chocolate-bar  .heart-container .heart{    /* On Click in Wrapper (changes #unwrap checkbox State),
-                      with .heart container , to handle  Animation. Change scale of Visual*/
-
-           transform:  scale(1.3) rotate(-45deg);   /* Add
-
-        }
-
- .hidden-checkbox {    /* Default Hide*/
-     display: none;/*Prevent visibility*/
-
-  }
-
-
-  .chocolate-container {    /* sets Position of all elements  .*/
-   	 position: relative;     /*  For the message box. Use and sets absolute on childs  */
-
-    display: flex;  /* allows box/adjustments   using  , blocks/sizes*/
-           flex-direction:column ;/* order display   for position, and messages on correct vertical positions */
-            justify-content: center;   /* Centers using properties and blocks (boxes, responsive, use padding on card */
-
- }
-  .wrapper {     /* sets attributes  size on click area  , changes */
-      width: 200px;
-
-      height: 100px;/*Height of   bar  / on clicked state */
-
-     position: relative;     /* positioning, uses with
-
-             cursor: pointer;  /* change it to pointer to indicate it on interactive area   , allows for wrap on clicked to*/
-
-     /*border: solid ; (testing purpose:
-
-         prevent from any possible content outside of parent to  show
-
-*/
-      /*border: solid yellow;  */
-  overflow: hidden;
-
- }
-
-    .wrapper-base{
-  /* Styles of wrapp element
-
-  use display-flex for sizes */
-
-     width: 100%;
-
-      height: 100%;/* for on_click box/sizes*/
-
-      background-color: #FFD700;  /*  Wrapping color gold   */
-         border-radius: 5px;  /* */
-
-      transform-style: preserve-3d;    /*Visual for positioning */
-
-           z-index: 10; /*Puts Base top*/
-         transition:  transform 1s ease;   /* and Smoother movement changes
-
-    box-shadow: 5px 5px  5px  rgba(0,0,0,0.3)
-         border: solid   rgba(0,0,0,0.2);    /* */
- }
-
-/*Top wrap Effect*/
- /*Add "Open 3D top". Uses color */
-   .wrapper-top {  /*visual, when unwrapped set visual, color*/
-
-       background-color:  #FFD700;
-        /*   background-color: inherit;*/
-   position: absolute;
-
-     width: 100%;
-           top: -48px; /*Adjust  appropriately to simulate wrap, top.*/
-         height:48px;
-
-/* Visual on Open for 3d: */
-     transform-style: preserve-3d; /* allows 3d, and perspective changes.*/
-
-         box-shadow:5px 5px 5px    rgba(0,0,0,0.5);
-
-   transition: all 1s ease;    /*Transition and Animation effect:*/
- }
-
-/* Combines click on wrap  label and rotating  top/ base . Sets Animation when triggered and changed.  .
-On-click
-it set 3D Animation visual changes on the rotate  top element in the X-plane  , simulates visual 3D.*/
-    /*Visual */
-
-     /* */
-
-    /* #unwrap, checks state  (Checkbox Hack), Check, change Styles
-
-       */
-  #unwrap:checked + .wrapper .wrapper-top {   /* rotate wrapper when label*/
-
-/*	-webkit-transition: all .6s ease;
-    transition: all .6s ease;/*Adds
-
-      transform: rotateX(-170deg);
-
-         z-index: 10;
-     transition-timing-function:  cubic-bezier(0.175, 0.885, 0.32, 1.275); /*Smoother, improves transitions
- }
- /* Changes when #wrap clicked -> set animation visual top part
-
-and also sets the animation  .*/
- #unwrap:checked  + .wrapper .wrapper-base{ /*on check the unwrapped status in   check box element
-
-z-index: 1;/* Sets index */
- }
-
-.chocolate-bar {  /* Bar of all six chocolate, displays like "blocks"
-
-	position: relative;/* positioning.*/
-
-     width: 200px;   /* Adjust  */
-    background-color: #3D1C02; /*  Dark Chocolate
-
- gap:4px;/* add a  gap between chocolate squares for preventing from hiding elements behind  , better
-gap in spaces, (requires set*/
-    padding: 10px;
- border-radius: 4px;     /* visual style of object */
-
- /*   transition: scale 0.3s ease, opacity 0.7s;*/
-
-   box-shadow:   4px   4px  2px  rgba(0,0,0, 0.5);
-
-    /* By default invisible*/
-	opacity:0;
-     transition: transform 0.4s ease, opacity  0.4s;
-   /*  border: solid*/
-	z-index:-100;
-
-}
-
-#unwrap:checked  ~.chocolate-bar {   /* Changes Display: Show all on UnWrap   , */
-
-     z-index: 2;    /*Changes visibility using on  element that   involves wrapper label action, show all sibling on TOP
-
-
-   transform: scale(1);/*Normal Visual Size  (transition
-
-   opacity: 1;/* Shows with Fade-in changes, visually.
-
-  }
-
-/* Styles pieces individually  */
-
-    .chocolate-piece { /* for six pieces:*/
-
-       width: 30px;  /* Sizes of */
-         height: 80px;   /* set dimension for each of the square chocolates    for better handle events  */
-         /*chocolate style/visual */
-       background-color:#3D1C02 ;
-    border-radius: 4px;
-  cursor: pointer;
-
-        /*Set flex properties/ positioning  */
-
-     display: inline-block; /* Allows Box Display / sizes
-
-  box-shadow: 2px 2px  2px rgba(0,0,0, 0.2)
-      border: solid  rgba(0,0,0, 0.3);  /* Add visual and borders, better
-
-margin-left: 4px; /*Set gaps   between*/
-
-/* set smoother background when click. */
-
-         transition: background-color 0.6s;
-         position: relative;
-
-         /*important , the visual requires position (parent), when drawing Bite  .*/
- overflow:hidden ; /* Hides extra Content, for simulate effect
-
- }
-
-      /*On hover each  , make Light   it more   */
-      .chocolate-piece:hover{
-   background-color:   #4E2A14 /*  Change Color if mouse is on*/
-
-        }
-
-
-/* */
-
- .bite{/*
-
-     display: inline-block;/* use position display for creating box element.
-
-
- /* Prevent extra content
-
-           box-shadow: 2px 3px  2px   #3D1C02; /* Improves  and
-
-       border-radius: 100%;/* Requires , */
- /* Set  attributes when simulating/ creating draw visual with shape element   (border-radious,
-               to create rounded corners (and circle effect, after:: )*/
-
-           position: absolute;   /* For Simulate (position and size: */
-
-/*Positioning: it must go, as said in  it should require*/
-     top:5px;     /* moves vertical position (for showing the "bite-visual.  It uses multiple elements like shape with relative element(before:: , after:::),
-
-     right: 0px; /* Right-position horizontal for visually simulate/creating    .It "move" */
-
-           width:30px;  /* Required: when drawing*/
-
- }
-
-
-     .bite::before{
-
-   background-color: #f8e0e6 ;/*   same color of     . Required. It uses same visual effect and color. It can create the*/
-
-     	 /*Visual. set same attributes.*/
-
-     content:"";   /* content require, creates   it: like shape with color background  same   color as  page
-
-                position:absolute; */
-
-                top:17px;
-
-/*Position , the background of color is used. */
-
-               width: 45px;/*Width of  the "  on square  element .It
-
-              right: 4px;/*moves  for making simulate as  chocolate , and   the visual  draw   a "  on-border
-
-              border-radius:55px ;  /* Draw
-
-              height:32px;
-
- /*	 */
-
-        }
-
-     /* Uses  and on check to trigger Animation
-
-          Click, change attributes*/
-
- /*Click event : Check each id number of piece to make correct hide
-   It hide each span class =bite.
-*/
-
-         #piece1:checked + .chocolate-piece  .bite ,  /* Combine
-
-         #piece2:checked  + .chocolate-piece .bite ,  /* Hide with ID
-
-   #piece3:checked  + .chocolate-piece .bite ,  /* */
-  #piece4:checked  +  .chocolate-piece .bite ,
-
-         #piece5:checked  + .chocolate-piece .bite ,/* checked set bite shape off */
-          #piece6:checked + .chocolate-piece  .bite     {   /* click (Checkbox +   : Change style attribute
-
-          top: -155px;  /* It will visually  move, changing visual effect, hides span (*/
-
-             right:-160px;
-
-         transition: all 0.3s  ease;   /*and duration*/
-
- /*border-style: ; /*Debug. check visually
-     box-shadow: inherit; /*Inherits parents
-
-  */
-
-  }
-     /* Message Text  style settings
-
-   uses messages < class  as parent for locating   <p   that renders messages appropriately.
-
-        */
-
-      .messages {
-
-     display: inline-block;
-
-        text-align:center;  /* Center and sets position
-
-     width: min(100%, 200px); /* Handle it
-
-           transition: display 0.4s ease;   /* smoother transition: */
-
-        }
-
-
-/*    Messages Display: on checked , with combination
-
-            */
-
- .message {
-
-  opacity: 0;   /* Invisible*/
-
-           transform: translateY(20px); /* adds and move*/
-        transition:  transform 0.8s , opacity 0.8s;   /* Set both (smoother, transitions when changing ) */
-
-     position:absolute;    /*Use position and changes.*/
-         top:150px;
-
-       	text-align: center;  /*   Centered  on parent */
-
-   /* Required   positioning. */
-
-      width:210px;     /* Prevent some element*/
-
-    left: calc(  -10px ); /* Position Center of Message */
- }
-
-    #piece1:checked ~ .messages #message1,  /* each with ID/position   .changes visible with combination*/
-  #piece2:checked ~ .messages #message2, /* show  appropiate , change style*/
-  #piece3:checked ~ .messages #message3,  /* Checked states -> sibling ~ with */
-
-     #piece4:checked ~ .messages #message4,   /*Changes opacity to correct position. and set transform property (animation movement.)
-
-     #piece5:checked ~ .messages #message5,
-
-       #piece6:checked ~ .messages #message6   {/* changes Opacity  to , combination + */
-
-           /*display: block;   for hiding or prevent (not necesssary, still valid )*/
-
-   transform: translateY(0px);/*Move in   and */
-     opacity: 1; /* Make visible , the parent element on   */
-      transition-delay: 0.1s;     /* smoother animations  when checking piece to  */
- }
-</style>
-
-
-    <!--Using and Embedding Fonts in file with  Fonts-->
-     <!-- Set Font Directly: -->
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
-
-
-  <!-- Responsive, on devices small*/
-
-
+  <meta charset="UTF-8">
+  <title>Happy Chocolate Day!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap" rel="stylesheet">
+  <!-- GSAP for smooth, high-performance animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    /* Cool animated background */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 600% 600%;
+      animation: gradientBG 16s ease infinite;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    /* Container for the entire animation */
+    #animation-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    /* Gold foil wrapper styling */
+    #wrapper {
+      position: absolute;
+      width: 450px;
+      height: 250px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #FFD700, #FFC107);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 3;
+    }
+    /* Chocolate bar container: hidden initially behind the wrapper */
+    #chocolate-bar {
+      position: absolute;
+      width: 450px;
+      height: 250px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 10px;
+      z-index: 2;
+      opacity: 0;
+    }
+    /* Each chocolate piece */
+    .chocolate-piece {
+      background: linear-gradient(145deg, #3D1C02, #5a2e0f);
+      border-radius: 4px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Message display styling */
+    #message {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      text-align: center;
+      font-family: 'Tangerine', cursive;
+      font-size: 3rem;
+      color: #9A031E;
+      opacity: 0;
+      z-index: 5;
+    }
+    /* Falling chocolates container */
+    #falling-chocolates {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 4;
+    }
+    /* Style for each falling chocolate */
+    .falling-chocolate {
+      position: absolute;
+      width: 30px;
+      height: 20px;
+      background: linear-gradient(145deg, #3D1C02, #5a2e0f);
+      border-radius: 4px;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    /* Particle styling (chocolate crumbs) */
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #3D1C02;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    /* Floating heart container */
+    #heart-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 6;
+    }
+    /* Floating heart shape */
+    .heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle, rgba(154,3,30,1) 0%, rgba(255,111,97,1) 100%);
+      clip-path: polygon(50% 0%, 61% 10%, 75% 15%, 85% 30%, 90% 45%, 85% 60%, 75% 75%, 50% 100%, 25% 75%, 15% 60%, 10% 45%, 15% 30%, 25% 15%, 39% 10%);
+      filter: drop-shadow(0 0 8px rgba(255,111,97,1));
+    }
+  </style>
 </head>
 <body>
-  <div class ="card">
-
-<div class="chocolate-container">
-
-
-    <!-- all the pieces -->
-  <input type="checkbox" id="unwrap" class="hidden-checkbox">
-
-    <input type="checkbox" id="piece1" class="hidden-checkbox">
-  <input type="checkbox" id="piece2" class="hidden-checkbox">
-
-     <input type="checkbox" id="piece3" class="hidden-checkbox">
-   <input type="checkbox" id="piece4" class="hidden-checkbox">
-
-    <input type="checkbox" id="piece5" class="hidden-checkbox">
-  <input type="checkbox" id="piece6" class="hidden-checkbox">
-
-
-
-<!--  Label to Unwrap Click Events:
-Uses CSS + Checbkox Check combination
-      it linked and sets trigger click and  state: using #id
- -->
-
-      <label for="unwrap" class="wrapper">
-
-           <div class ="wrapper-top"> </div>   <!-- Add top effect ,for simulate unrapping on*/
-         <div class ="wrapper-base">
-
-             </div>    <!-- Color */
-
-           </label>
-
-
-        <div class="chocolate-bar">
-
-            <div class="heart-container">     <!-- Heart: -->
-
-                     <div class="heart"></div> <!-- Shape Using Styles*/
-          </div>
-
-              <!-- Pieces   for visual*/
-
-             <label for="piece1" class="chocolate-piece piece1">
-
-                   <!-- Each  click square of has its custom   .
-               When,
-                     "Checked":  changes
-
-                      it
-
-                       to prevent from
-                   element display using style + after shapes elements-->
-
-                           <!-- simulates-->
-
-         <span class ="bite"> </span></label>
-
-                   <!--  simulate   on -->
-
-                 <label for="piece2" class="chocolate-piece piece2">   <span class ="bite"> </span></label>   <!-- -->
-
-                  <label for="piece3" class="chocolate-piece piece3">  <span class ="bite"> </span></label>
-
-                   <!-- and simulate   -->
-            <label for="piece4" class="chocolate-piece piece4">  <span class="bite" >  </span></label>
-
-         <!-- -->
-           <label for="piece5" class="chocolate-piece piece5"> <span class="bite">  </span> </label>   <!-- */
-
- -->
-  <label for="piece6" class="chocolate-piece piece6"> <span class = "bite" > </span>   </label>
-
- <!-- end    Chocolate pieces and labels -->
-
-            <!-- -->
-
-         <!--   render message correctly, on center .it depends also of click  states,
-
-     -->
-
-           <div class="messages">   <!-- Messages container    using clicks*/ --
-
- <p class="message" id="message1">You're the sweetest!</p>
-
-                   <p class="message" id="message2">My heart melts for you.</p>  <!--Add -->
-              <p class="message" id="message3">You make every day brighter!</p>
-
-             <p class="message" id="message4">I Love You More Than Chocolate!</p>
-
-               <p class="message" id="message5">You Are My Perfect Treat</p>   <!-- Messages and  in text to*/
-                <p class="message" id="message6">Together Forever</p>   <!--each -->
-
-                 </div>  <!--End   on each pieces -->
-           </div>  <!--  chocolate  and  -->
-
-      </div>  <!-- Card,-->
-
-      </div>
-
-    </body>
+  <div id="animation-container">
+    <!-- Gold foil wrapper (click to peel) -->
+    <div id="wrapper"></div>
+    <!-- Chocolate bar divided into 6 pieces (2 rows x 3 columns) -->
+    <div id="chocolate-bar">
+      <div class="chocolate-piece" data-message="You're sweeter than chocolate!"></div>
+      <div class="chocolate-piece" data-message="Every moment with you melts my heart."></div>
+      <div class="chocolate-piece" data-message="Your love is as rich as the finest cocoa."></div>
+      <div class="chocolate-piece" data-message="Life is sweeter with you by my side."></div>
+      <div class="chocolate-piece" data-message="A bite of love, a taste of joy."></div>
+      <div class="chocolate-piece" data-message="You make my world a delicious place."></div>
+    </div>
+    <!-- Message container -->
+    <div id="message"></div>
+    <!-- Container for falling chocolates at the end -->
+    <div id="falling-chocolates"></div>
+    <!-- Container for floating hearts -->
+    <div id="heart-container"></div>
+  </div>
+  
+  <script>
+    /*****************************
+     * Global Variables & Setup  *
+     *****************************/
+    let activeBite = null;
+    let biteTimeout = null;
+    
+    const wrapper = document.getElementById('wrapper');
+    const chocolateBar = document.getElementById('chocolate-bar');
+    const messageEl = document.getElementById('message');
+    const fallingContainer = document.getElementById('falling-chocolates');
+    
+    /*****************************
+     * Floating Heart Animation  *
+     *****************************/
+    function createFloatingHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      // Start at a random horizontal position along the bottom
+      heart.style.left = Math.random() * 80 + 10 + '%';
+      heart.style.top = '100%';
+      document.getElementById('heart-container').appendChild(heart);
+      // Animate upward then reset continuously
+      gsap.to(heart, {
+        y: -window.innerHeight - 50,
+        duration: 5 + Math.random() * 3,
+        ease: "power1.inOut",
+        repeat: -1,
+        delay: Math.random() * 2,
+        onRepeat: () => {
+          heart.style.left = Math.random() * 80 + 10 + '%';
+        }
+      });
+      // Pulsate the heart gently
+      gsap.to(heart, {
+        scale: 1.2,
+        duration: 0.8,
+        yoyo: true,
+        repeat: -1,
+        ease: "power1.inOut"
+      });
+    }
+    
+    // Create a few floating hearts for extra charm
+    for (let i = 0; i < 5; i++) {
+      createFloatingHeart();
+    }
+    
+    /*****************************
+     * Wrapper Peel Animation    *
+     *****************************/
+    wrapper.addEventListener('click', () => {
+      // Animate the wrapper "peeling" away: rotate and slide right
+      gsap.to(wrapper, {
+        duration: 1.5,
+        rotationY: 90,
+        x: 300,
+        ease: "power2.inOut",
+        onComplete: () => {
+          wrapper.style.display = 'none';
+          // Reveal the chocolate bar by fading it in
+          gsap.to(chocolateBar, {duration: 1, opacity: 1});
+        }
+      });
+      // Create a fun particle effect as the wrapper peels off
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = (window.innerWidth / 2) + 'px';
+        particle.style.top = (window.innerHeight / 2) + 'px';
+        document.body.appendChild(particle);
+        gsap.to(particle, {
+          duration: 1.5,
+          x: (Math.random() - 0.5) * 200,
+          y: (Math.random() - 0.5) * 200,
+          opacity: 0,
+          scale: 0,
+          ease: "power2.out",
+          onComplete: () => { particle.remove(); }
+        });
+      }
+    });
+    
+    /*****************************
+     * Display Romantic Message  *
+     *****************************/
+    function showMessage(text) {
+      messageEl.textContent = text;
+      gsap.fromTo(messageEl, {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: 0.5, ease: "power2.out"});
+      gsap.to(messageEl, {opacity: 0, delay: 3, duration: 0.5});
+    }
+    
+    /*************************************
+     * Chocolate Crumb Particle Effect   *
+     *************************************/
+    function createCrumbParticles(piece) {
+      const rect = piece.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      for (let i = 0; i < 10; i++) {
+        const crumb = document.createElement('div');
+        crumb.classList.add('particle');
+        crumb.style.left = cx + 'px';
+        crumb.style.top = cy + 'px';
+        document.body.appendChild(crumb);
+        gsap.to(crumb, {
+          duration: 1,
+          x: (Math.random() - 0.5) * 100,
+          y: (Math.random() - 0.5) * 100,
+          opacity: 0,
+          scale: 0,
+          ease: "power2.out",
+          onComplete: () => { crumb.remove(); }
+        });
+      }
+    }
+    
+    /*************************************
+     * Bite Animation for a Chocolate    *
+     *************************************/
+    function bitePiece(piece) {
+      // If another piece is active, remove it immediately
+      if (activeBite && activeBite !== piece) {
+        activeBite.remove();
+        activeBite = null;
+        if (biteTimeout) clearTimeout(biteTimeout);
+      }
+      activeBite = piece;
+      // Retrieve the romantic message from the piece's data attribute
+      const msg = piece.getAttribute('data-message');
+      showMessage(msg);
+      
+      // Clone the piece to create two halves
+      const rect = piece.getBoundingClientRect();
+      const pieceClone = piece.cloneNode(true);
+      pieceClone.style.position = 'absolute';
+      pieceClone.style.left = rect.left + 'px';
+      pieceClone.style.top = rect.top + 'px';
+      pieceClone.style.margin = 0;
+      pieceClone.style.transformOrigin = "center center";
+      document.body.appendChild(pieceClone);
+      
+      // Create left and right halves using CSS clipping
+      const leftHalf = pieceClone.cloneNode(true);
+      const rightHalf = pieceClone.cloneNode(true);
+      leftHalf.style.clipPath = "inset(0 50% 0 0)";
+      rightHalf.style.clipPath = "inset(0 0 0 50%)";
+      document.body.appendChild(leftHalf);
+      document.body.appendChild(rightHalf);
+      piece.style.visibility = "hidden";
+      
+      // Animate the halves moving apart and fading away
+      gsap.to(leftHalf, {duration: 1, x: -50, opacity: 0, ease: "power2.out", onComplete: () => { leftHalf.remove(); }});
+      gsap.to(rightHalf, {duration: 1, x: 50, opacity: 0, ease: "power2.out", onComplete: () => { rightHalf.remove(); }});
+      
+      // Emit chocolate crumb particles from the bitten piece
+      createCrumbParticles(piece);
+      
+      // Fade out and remove the original piece after the bite animation
+      gsap.to(piece, {duration: 0.5, opacity: 0, delay: 1, onComplete: () => { 
+        piece.remove(); 
+        checkFinalCelebration(); 
+      }});
+      
+      // Clear the active bite after 10 seconds if no new piece is clicked
+      if (biteTimeout) clearTimeout(biteTimeout);
+      biteTimeout = setTimeout(() => {
+        activeBite = null;
+      }, 10000);
+    }
+    
+    // Add click event listeners to each chocolate piece
+    const pieces = document.querySelectorAll('.chocolate-piece');
+    pieces.forEach(piece => {
+      piece.addEventListener('click', (e) => {
+        e.stopPropagation();
+        bitePiece(piece);
+      });
+    });
+    
+    /*************************************
+     * Trigger Final Celebration         *
+     *************************************/
+    function checkFinalCelebration() {
+      const remaining = document.querySelectorAll('.chocolate-piece');
+      if (remaining.length === 0) {
+        setTimeout(finalCelebration, 1000);
+      }
+    }
+    
+    // Final celebration: display "Happy Chocolate Day!" and create a shower of falling chocolates
+    function finalCelebration() {
+      showMessage("Happy Chocolate Day!");
+      // Improved falling chocolates: create 50 pieces with random delays, rotations, and durations
+      for (let i = 0; i < 50; i++) {
+        let delay = Math.random() * 2; // Random delay up to 2 seconds
+        const fallChoc = document.createElement('div');
+        fallChoc.classList.add('falling-chocolate');
+        fallChoc.style.left = Math.random() * window.innerWidth + "px";
+        fallChoc.style.top = -50 + "px";
+        fallingContainer.appendChild(fallChoc);
+        gsap.to(fallChoc, {
+          delay: delay,
+          duration: 3 + Math.random() * 2,
+          y: window.innerHeight + 50,
+          rotation: Math.random() * 360,
+          ease: "power2.in",
+          onComplete: () => { fallChoc.remove(); }
+        });
+      }
+    }
+  </script>
+</body>
 </html>
