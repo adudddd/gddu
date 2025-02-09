@@ -23,6 +23,18 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+    /* Glitter animation for the wrapper */
+    @keyframes glitter {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
+      100% { filter: brightness(1); }
+    }
+    /* Glitter animation for message text */
+    @keyframes glitterText {
+      0% { text-shadow: 0 0 2px #C27BA0, 0 0 4px #E6E6FA; }
+      50% { text-shadow: 0 0 10px #C27BA0, 0 0 20px #E6E6FA; }
+      100% { text-shadow: 0 0 2px #C27BA0, 0 0 4px #E6E6FA; }
+    }
     /* Container for the entire animation */
     #animation-container {
       position: relative;
@@ -48,11 +60,6 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-    }
-    @keyframes glitter {
-      0% { filter: brightness(1); }
-      50% { filter: brightness(1.2); }
-      100% { filter: brightness(1); }
     }
     /* Main wrapper text */
     #wrapper-text {
@@ -106,7 +113,7 @@
       font-family: 'Tangerine', cursive;
       font-size: 3rem;
       color: #C27BA0;
-      text-shadow: 2px 2px 5px rgba(194, 123, 160, 0.8), 0 0 10px #e6e6fa;
+      animation: glitterText 1.5s infinite;
       opacity: 0;
       z-index: 5;
     }
@@ -139,6 +146,7 @@
     const chocolateBar = document.getElementById('chocolate-bar');
     const messageEl = document.getElementById('message');
 
+    // When the wrapper is clicked, peel it away and reveal the chocolate bar.
     wrapper.addEventListener('click', () => {
       gsap.to(wrapper, {
         duration: 1.5,
@@ -152,24 +160,39 @@
       });
     });
 
+    // Display a message with glittery lavender styling that fades out after 3 seconds.
     function showMessage(text) {
+      // Cancel any previous tweens on the message element.
+      gsap.killTweensOf(messageEl);
       messageEl.textContent = text;
-      gsap.fromTo(messageEl, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
-
-      // Fade message out after 3 seconds
-      gsap.to(messageEl, { opacity: 0, duration: 0.5, delay: 3 });
+      gsap.fromTo(messageEl, 
+        { opacity: 0, y: 20 }, 
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+      );
+      // Fade out after 3 seconds and then clear the text.
+      gsap.to(messageEl, { 
+        opacity: 0, 
+        duration: 0.5, 
+        delay: 3, 
+        onComplete: () => { messageEl.textContent = ""; } 
+      });
     }
 
+    // When a chocolate piece is clicked, show its message and fade it out.
     function bitePiece(piece) {
       const msg = piece.getAttribute('data-message');
       showMessage(msg);
-
-      gsap.to(piece, { duration: 0.5, opacity: 0, delay: 1, onComplete: () => { 
+      gsap.to(piece, { 
+        duration: 0.5, 
+        opacity: 0, 
+        delay: 1, 
+        onComplete: () => { 
           piece.style.pointerEvents = 'none';
           piece.dataset.bit = "true";
           bittenCount++;
           checkFinalCelebration();
-      }});
+        }
+      });
     }
 
     const pieces = document.querySelectorAll('.chocolate-piece');
@@ -182,6 +205,7 @@
       });
     });
 
+    // Check if all pieces have been bitten; if so, trigger the final celebration.
     function checkFinalCelebration() {
       const unbitPieces = document.querySelectorAll('.chocolate-piece:not([data-bit])');
       if (unbitPieces.length === 0) {
@@ -189,23 +213,18 @@
       }
     }
 
+    // Final celebration: display the final message for 3 seconds.
     function finalCelebration() {
-      gsap.to(messageEl, {
-        duration: 0.3,
-        opacity: 0,
-        onComplete: () => {
-          messageEl.textContent = "Thank you for being with me till this time ❤️";
-          gsap.fromTo(messageEl, { opacity: 0, y: 20 }, {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            ease: "power2.out",
-            onComplete: () => {
-              gsap.to(messageEl, { duration: 1, opacity: 0, delay: 10 });
-            }
-          });
-        }
-      });
+      gsap.killTweensOf(messageEl);
+      // Immediately clear any existing message and then show the final message.
+      messageEl.textContent = "";
+      gsap.fromTo(messageEl, 
+        { opacity: 0, y: 20 }, 
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", onComplete: () => {
+            gsap.to(messageEl, { opacity: 0, duration: 0.5, delay: 3, onComplete: () => { messageEl.textContent = ""; } });
+        } }
+      );
+      messageEl.textContent = "Thank you for being with me till this time ❤️";
     }
   </script>
 </body>
